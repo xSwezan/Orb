@@ -20,12 +20,11 @@ jobs:
       name: Install Aftman
       with:
         version: v0.2.6
-        path: /
+        path: aftman.toml
         token: ${{ SECRETS.GITHUB_TOKEN }}
 
     - name: Lint
-      run: |
-        selene ./lib
+      run: selene ./lib
 
   style:
     name: Styling
