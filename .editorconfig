@@ -7,5 +7,5 @@ root = true
 indent_style = tab
 
 [*.yaml]
-indent_size = space
+indent_style = space
 indent_size = 2

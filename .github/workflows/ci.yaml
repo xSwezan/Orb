@@ -13,15 +13,19 @@ jobs:
     name: Lint
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
+    - name: Checkout
       uses: actions/checkout@v3
 
-    - uses: ok-nick/setup-aftman@v0.3.0
-      name: Install Aftman
+    - name: Install Aftman
+      uses: ok-nick/setup-aftman@v0.3.0
       with:
         version: v0.2.6
-        path: /
         token: ${{ SECRETS.GITHUB_TOKEN }}
+
+    - name: Install Packages
+      run: |
+        aftman install
+        wally install
 
     - name: Lint
       run: selene ./lib
