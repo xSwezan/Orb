@@ -170,6 +170,8 @@ function OrbClass:__step()
 		end
 	end
 
+	local x = 10
+
 	if self.LastPosition and (self.LastPosition == self.Position) then
 		self.NotMoving = true
 

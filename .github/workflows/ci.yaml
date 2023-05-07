@@ -19,11 +19,7 @@ jobs:
     - uses: ok-nick/setup-aftman@v0.3.0
       name: Install Aftman
       with:
-<<<<<<< Updated upstream
-        version: v1.0.0
-=======
         version: v0.2.6
->>>>>>> Stashed changes
         path: /
         token: ${{ SECRETS.GITHUB_TOKEN }}
 
