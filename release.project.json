@@ -1,12 +1,12 @@
 {
-	"name": "ModuleName",
-	"servePlaceIds": [],
+	"name": "Orb",
+	"servePlaceIds": [13304526071],
 	"tree": {
 		"$className": "DataModel",
 		"ReplicatedStorage": {
 			"$className": "ReplicatedStorage",
 
-			"lib": {
+			"Orb": {
 				"$path": "Packages",
 				"$className": "ModuleScript",
 				"$properties": {
