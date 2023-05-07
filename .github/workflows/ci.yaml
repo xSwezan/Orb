@@ -20,7 +20,7 @@ jobs:
       name: Install Aftman
       with:
         version: v0.2.6
-        path: aftman.toml
+        path: /
         token: ${{ SECRETS.GITHUB_TOKEN }}
 
     - name: Lint
