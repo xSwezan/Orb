@@ -1,9 +1,12 @@
 [package]
-name = "xswezan/modulename"
-version = "0.1.0"
+name = "xswezan/orb"
+description = "Create interactable Orbs easily!"
+version = "1.0.0"
+authors = ["xSwezan"]
 registry = "https://github.com/UpliftGames/wally-index"
 realm = "shared"
 
 [dependencies]
 Janitor = "howmanysmall/janitor@1.15.1"
-Promise = "evaera/promise@4.0.0"
+Signal = "sleitnick/signal@1.5.0"
+# Promise = "evaera/promise@4.0.0"

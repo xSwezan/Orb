@@ -1,3 +1,7 @@
 {
-	"robloxLsp.workspace.rojoProjectFile": "release"
+	"robloxLsp.workspace.rojoProjectFile": "release",
+	"[lua]": {
+		"editor.defaultFormatter": "JohnnyMorganz.stylua",
+		"editor.formatOnSave": true
+	}
 }
