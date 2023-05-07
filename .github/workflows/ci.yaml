@@ -25,7 +25,7 @@ jobs:
 
     - name: Lint
       run: |
-        selene lib/.
+        selene ./lib
 
   style:
     name: Styling
@@ -36,4 +36,4 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         version: "0.17.1"
-        args: --check lib/.
+        args: --check ./lib
