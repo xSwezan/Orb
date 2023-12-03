@@ -14,7 +14,7 @@ local CreatedOrbs: { [Part]: Types.Orb } = {}
 
 local OrbClass = {}
 
-function OrbClass.new(): Types.Orb
+function OrbClass.new(Icon: BillboardGui?): Types.Orb
 	local Properties = {
 		Position = { Vector3.new() },
 		Velocity = { Vector3.new() },
@@ -41,7 +41,7 @@ function OrbClass.new(): Types.Orb
 
 		DespawnTime = { 300 },
 
-		Icon = { DefaultIcon:Clone() },
+		Icon = { Icon:Clone() or DefaultIcon:Clone() },
 
 		DebugMode = { false },
 	}
