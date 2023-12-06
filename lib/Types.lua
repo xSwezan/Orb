@@ -3,7 +3,7 @@ local Signal = require(script.Parent.Parent.Signal)
 local Types = {}
 
 export type OrbModule = {
-	new: () -> Orb,
+	new: (Icon: BillboardGui?) -> Orb,
 }
 
 export type Orb = {
@@ -16,7 +16,7 @@ export type Orb = {
 
 	Anchored: boolean,
 
-	Target: Vector3 | BasePart | Attachment?,
+	Target: Vector3 | BasePart | Attachment | Player?,
 	TargetRange: number,
 	DestroyOnTargetReached: boolean,
 

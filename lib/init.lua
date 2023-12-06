@@ -10,40 +10,41 @@ local Types = require(script.Types)
 
 local Camera: Camera = workspace.CurrentCamera
 
-local CreatedOrbs: { [Part]: Types.Orb } = {}
+local CreatedOrbs: {[Part]: Types.Orb} = {}
 
 local OrbClass = {}
 
 function OrbClass.new(Icon: BillboardGui?): Types.Orb
 	local Properties = {
-		Position = { Vector3.new() },
-		Velocity = { Vector3.new() },
+		Position = {Vector3.new()};
+		Velocity = {Vector3.new()};
 
-		Bounces = { true },
+		Bounces = {true};
 
-		Parent = { nil },
+		Parent = {nil};
 
-		Anchored = { false },
+		Anchored = {false};
 
-		Target = { nil },
-		TargetRange = { math.huge },
-		DestroyOnTargetReached = { true },
+		Target = {nil};
+		TargetRange = {math.huge};
+		PickupRange = {3};
+		DestroyOnTargetReached = {true};
 
-		AutoMerge = { true },
-		MergeRange = { 5 },
-		RequiredOrbsToMerge = { 150 },
-		MergeCheckTimer = { 5 },
+		AutoMerge = {true};
+		MergeRange = {5};
+		RequiredOrbsToMerge = {150};
+		MergeCheckTimer = {5};
 		CanMerge = {
 			function()
 				return true
-			end,
-		},
+			end;
+		};
 
-		DespawnTime = { 300 },
+		DespawnTime = {300};
 
-		Icon = { Icon:Clone() or DefaultIcon:Clone() },
+		Icon = {if Icon then Icon:Clone() else DefaultIcon:Clone()};
 
-		DebugMode = { false },
+		DebugMode = {false};
 	}
 
 	local self = setmetatable(table.clone(OrbClass), {
@@ -53,18 +54,18 @@ function OrbClass.new(Icon: BillboardGui?): Types.Orb
 			else
 				return rawget(this, Key)
 			end
-		end,
+		end;
 		__newindex = function(this, Key: string, Value: any)
 			if Properties[Key] ~= nil then
-				Properties[Key] = { Value }
-				this:__set(Key, Value)
+				Properties[Key] = {Value}
+				this:set(Key, Value)
 			else
 				rawset(this, Key, Value)
 			end
-		end,
+		end;
 		__tostring = function()
 			return "Orb"
-		end,
+		end;
 	})
 
 	-- Events
@@ -86,20 +87,24 @@ function OrbClass.new(Icon: BillboardGui?): Types.Orb
 	self.DidMerge = false
 	self.DidReachTarget = false
 
-	self:__construct()
+	self:construct()
 
 	return self
 end
 
-function OrbClass:__construct()
-	rawset(self, "__janitor", Janitor.new())
+-->-----------------<--
+--> Private Methods <--
+-->-----------------<--
+
+function OrbClass:construct()
+	rawset(self, "Janitor", Janitor.new())
 
 	if RunService:IsServer() then
 		PhysicsService:RegisterCollisionGroup("Orb")
 		PhysicsService:CollisionGroupSetCollidable("Orb", "Orb", false)
 	end
 
-	self.__janitor:Add(task.delay(self.DespawnTime, self.Destroy, self), true)
+	self.Janitor:Add(task.delay(self.DespawnTime, self.Destroy, self), true)
 
 	local Part: Part = PartTemplate:Clone()
 	Part.Name = "Orb"
@@ -110,30 +115,27 @@ function OrbClass:__construct()
 
 	CreatedOrbs[Part] = self
 
-	self.__janitor:LinkToInstance(Part)
-	self.__janitor:Add(Part, "Destroy")
+	self.Janitor:LinkToInstance(Part)
+	self.Janitor:Add(Part, "Destroy")
 
-	self.__janitor:Add(
-		RunService.Heartbeat:Connect(function(DT: number)
-			self:__step(DT)
-		end),
-		"Disconnect"
-	)
+	self.Janitor:Add(RunService.Heartbeat:Connect(function(DeltaTime: number)
+		self:step(DeltaTime)
+	end),"Disconnect")
 end
 
-function OrbClass:__step()
+function OrbClass:step(DeltaTime: number)
 	local Part: Part = self.Part
 	local AlignPosition: AlignPosition = Part:FindFirstChildWhichIsA("AlignPosition")
 
-	self:__silentSet("Position", Part.CFrame.Position)
-	self:__silentSet("Velocity", Part.AssemblyLinearVelocity)
+	self:silentSet("Position", Part.CFrame.Position)
+	self:silentSet("Velocity", Part.AssemblyLinearVelocity)
 
 	local Target: Vector3? = GetPosition(self.Target)
 	Target = if Target and ((Target - self.Position).Magnitude > self.TargetRange) then nil else Target
 
 	AlignPosition.Position = Target or Vector3.new()
 	AlignPosition.Enabled = (Target ~= nil)
-	AlignPosition.Responsiveness = 30
+	-- AlignPosition.Responsiveness = 30
 	Part.CanCollide = (Target == nil)
 
 	local Icon: BillboardGui? = self.Icon
@@ -141,11 +143,11 @@ function OrbClass:__step()
 		Icon.Parent = Part
 
 		if self.DebugMode then
-			Icon.Brightness = if self:__shouldRender() then 1 else 0
+			Icon.Brightness = if self:shouldRender() then 1 else 0
 		end
 	end
 
-	if Target and ((Target - self.Position).Magnitude < 3) then
+	if Target and ((Target - self.Position).Magnitude < self.PickupRange) then
 		if not self.DidReachTarget then
 			self.TargetReached:Fire()
 		end
@@ -163,10 +165,10 @@ function OrbClass:__step()
 		self.LastMergeCheck = os.clock()
 		self.DidMerge = false
 
-		local Orbs = self:__getOrbs()
+		local Orbs = self:getOrbs()
 
 		if #Orbs >= self.RequiredOrbsToMerge then
-			self:__tryToMerge()
+			self:tryToMerge()
 		end
 	end
 
@@ -178,7 +180,7 @@ function OrbClass:__step()
 			(self.SecondsMotionless > self.MotionlessGoal)
 			and self.Bounces
 			and (math.random() < 0.03)
-			and (self:__shouldRender())
+			and (self:shouldRender())
 		then
 			self.Velocity = Vector3.new(0, 20, 0)
 		end
@@ -193,7 +195,7 @@ function OrbClass:__step()
 	self.LastPosition = self.Position
 end
 
-function OrbClass:__set(Key: string, Value: any)
+function OrbClass:set(Key: string, Value: any)
 	local Part: Part = self.Part
 
 	if Key == "Position" then
@@ -207,14 +209,12 @@ function OrbClass:__set(Key: string, Value: any)
 	end
 end
 
-function OrbClass:__silentSet(Key: string, Value: any)
-	self.Properties[Key] = { Value }
+function OrbClass:silentSet(Key: string, Value: any)
+	self.Properties[Key] = {Value}
 end
 
-function OrbClass:__merge(With: Types.Orb): boolean?
-	if not With then
-		return
-	end
+function OrbClass:merge(With: Types.Orb): boolean?
+	if not With then return end
 
 	self.DidMerge = true
 	With.DidMerge = true
@@ -225,42 +225,26 @@ function OrbClass:__merge(With: Types.Orb): boolean?
 	return true
 end
 
-function OrbClass:__tryToMerge()
-	if not self.Parent then
-		return
-	end
-	if self.DidMerge then
-		return
-	end
+function OrbClass:tryToMerge()
+	if not self.Parent then return end
+	if self.DidMerge then return end
 
-	local Orbs = self:__getOrbs()
+	local Orbs = self:getOrbs()
 
 	for _, Orb: Types.Orb in Orbs do
-		if not Orb then
-			continue
-		end
+		if not Orb then continue end
+		if Orb.DidMerge then continue end
 
-		if Orb.DidMerge then
-			continue
-		end
-		if (self.Position - Orb.Position).Magnitude > self.MergeRange then
-			continue
-		end
+		if (self.Position - Orb.Position).Magnitude > self.MergeRange then continue end
 		-- if ((os.clock() - Orb.LastMergeCheck) < Orb.MergeCheckTimer) then continue end
-		if not Orb.AutoMerge then
-			continue
-		end
-		if not (self.CanMerge(Orb)) then
-			continue
-		end
+		if not Orb.AutoMerge then continue end
+		if not (self.CanMerge(Orb)) then continue end
 
-		if self:__merge(Orb) then
-			break
-		end
+		if self:merge(Orb) then break end
 	end
 end
 
-function OrbClass:__getOrbs(): { Types.Orb }
+function OrbClass:getOrbs(): {Types.Orb}
 	local Orbs = {}
 
 	for _, OrbPart: Part in self.Parent:GetChildren() do
@@ -286,7 +270,7 @@ function OrbClass:__getOrbs(): { Types.Orb }
 	return Orbs
 end
 
-function OrbClass:__shouldRender()
+function OrbClass:shouldRender()
 	if RunService:IsClient() then
 		local DistanceToCamera: number = (self.Position - Camera.CFrame.Position).Magnitude
 		local _, OnScreen: boolean = Camera:WorldToScreenPoint(self.Position)
@@ -297,9 +281,13 @@ function OrbClass:__shouldRender()
 	return true
 end
 
+-->---------<--
+--> Methods <--
+-->---------<--
+
 function OrbClass:Destroy()
 	CreatedOrbs[self.Part] = nil
-	self.__janitor:Destroy()
+	self.Janitor:Destroy()
 	self = nil
 end
 

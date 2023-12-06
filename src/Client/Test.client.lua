@@ -5,11 +5,10 @@ local Orb = require(ReplicatedStorage.Orb)
 local Player = Players.LocalPlayer
 local Character = Player.CharacterAdded:Wait()
 
-local TARGET = Character:WaitForChild("HumanoidRootPart")
+local TARGET = Player
 
 task.wait(5)
 
--- for i = 1,25 do
 while true do
 	local Coin = Orb.new()
 	Coin.Parent = workspace:WaitForChild("Orbs")
@@ -18,7 +17,7 @@ while true do
 	Coin.Value = 10
 	-- Coin.RequiredOrbsToMerge = math.huge
 
-	local Time = 0.25
+	local Time = .25
 
 	task.delay(Time, function()
 		-- Coin.CanMerge = function(With)
@@ -34,7 +33,9 @@ while true do
 			Player:SetAttribute("Coins", (Player:GetAttribute("Coins") or 0) + Coin.Value)
 		end)
 
+		Coin.DestroyOnTargetReached = false
 		Coin.TargetRange = 10
+		Coin.PickupRange = 2
 		Coin.Target = TARGET
 	end)
 

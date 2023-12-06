@@ -19,11 +19,12 @@ imageLabel.ZIndex = 2
 imageLabel.Parent = icon
 
 local imageLabel1 = Instance.new("ImageLabel")
-imageLabel1.Image = "rbxassetid://13362036343"
+imageLabel1.Image = "rbxassetid://15527935214"
 imageLabel1.ScaleType = Enum.ScaleType.Fit
 imageLabel1.AnchorPoint = Vector2.new(0.5, 0.5)
 imageLabel1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 imageLabel1.BackgroundTransparency = 1
+imageLabel1.ImageTransparency = .75
 imageLabel1.BorderSizePixel = 0
 imageLabel1.Position = UDim2.fromScale(0.5, 0.5)
 imageLabel1.Size = UDim2.fromScale(1, 1)

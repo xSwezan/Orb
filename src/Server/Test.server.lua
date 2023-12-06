@@ -3,11 +3,9 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local SoundService = game:GetService("SoundService")
 local Orb = require(ReplicatedStorage.Orb)
 
-if true then
-	return
-end
-
 task.wait(5)
+
+if true then return end
 
 for i = 1, 200 do
 	-- while true do
@@ -26,28 +24,6 @@ for i = 1, 200 do
 
 	-- Coin.RequiredOrbsToMerge = 1
 
-	local billboardGui = Instance.new("BillboardGui")
-	billboardGui.Active = true
-	billboardGui.ClipsDescendants = true
-	billboardGui.LightInfluence = 1
-	billboardGui.Size = UDim2.fromOffset(200, 50)
-	billboardGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-
-	local value = Instance.new("TextLabel")
-	value.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json")
-	value.Text = Coin.Value
-	value.TextColor3 = Color3.fromRGB(255, 255, 255)
-	value.TextSize = 30
-	value.TextWrapped = true
-	value.AnchorPoint = Vector2.new(0.5, 0.5)
-	value.AutomaticSize = Enum.AutomaticSize.XY
-	value.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	value.BackgroundTransparency = 1
-	value.Position = UDim2.fromScale(0.5, 0.5)
-	value.Parent = billboardGui
-
-	billboardGui.Parent = Coin.Part
-
 	Coin.CanMerge = function(With)
 		return (With.Type == Coin.Type)
 	end
@@ -57,8 +33,6 @@ for i = 1, 200 do
 		-- print(`{Coin.Value} + {With.Value} = {NewValue}`)
 
 		Coin.Value = NewValue
-
-		value.Text = NewValue
 		-- Coin.Velocity += Vector3.new(0,40,0)
 	end)
 
