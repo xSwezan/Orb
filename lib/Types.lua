@@ -7,6 +7,7 @@ export type OrbModule = {
 }
 
 export type Orb = {
+	--> Properties
 	Position: Vector3,
 	Velocity: Vector3,
 
@@ -34,10 +35,14 @@ export type Orb = {
 
 	DebugMode: boolean?,
 
-	-- Events
-
+	--> Events
 	Merged: Signal.Signal, -- Fired before a merge is finished
 	TargetReached: Signal.Signal, -- Fired when Orb is at Target
+
+	--> Methods
+	SetIcon: (self: Orb, Icon: BillboardGui) -> nil;
+
+	Destroy: (self: Orb) -> nil;
 }
 
 return Types
